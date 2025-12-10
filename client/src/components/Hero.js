@@ -3,7 +3,7 @@ import { Box, Typography, Button, Container } from "@mui/material";
 import { styled } from "@mui/system";
 import { Link } from "react-router-dom";
 
-const HeroSection = styled("section")(({}) => ({
+const HeroSection = styled("section")(() => ({
   background: "linear-gradient(135deg, #1e1e1e 0%, #424242 100%)",
   color: "white",
   padding: "120px 0",
