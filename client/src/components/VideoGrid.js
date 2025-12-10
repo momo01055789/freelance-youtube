@@ -4,33 +4,6 @@ import VideoCard from "./VideoCard";
 import axios from "axios";
 
 // Mock data - replace with actual data from your API
-const mockVideos = [
-  {
-    id: "dQw4w9WgXcQ",
-    title: "The Most Amazing Sports Moments of 2023",
-    views: "1.2M",
-    date: "2 weeks ago",
-    duration: "8:45",
-    category: "sports",
-  },
-  {
-    id: "dQw4w9WgXcQ",
-    title: "Full Body Workout for Beginners",
-    views: "856K",
-    date: "3 weeks ago",
-    duration: "15:20",
-    category: "fitness",
-  },
-  {
-    id: "dQw4w9WgXcQ",
-    title: "Ancient Civilizations: The Rise and Fall",
-    views: "2.1M",
-    date: "1 month ago",
-    duration: "22:10",
-    category: "history",
-  },
-  // Add more mock videos as needed
-];
 
 const VideoGrid = ({
   category,
@@ -81,7 +54,6 @@ const VideoGrid = ({
             fontSize: { xs: "1.75rem", sm: "2rem", md: "2.125rem" },
             textAlign: showAll ? "center" : "left",
             fontWeight: 700,
-            textAlign: "center",
             position: "relative",
             "&:after": {
               content: '""',
