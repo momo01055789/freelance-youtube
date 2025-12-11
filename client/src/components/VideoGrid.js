@@ -18,8 +18,8 @@ const VideoGrid = ({
     const fetchVideos = async () => {
       try {
         const url = category
-          ? `http://localhost:5000/api/v1/videos?category=${category}`
-          : `http://localhost:5000/api/v1/videos`;
+          ? `https://freelance-youtubeserver.vercel.app/api/v1/videos?category=${category}`
+          : `https://freelance-youtubeserver.vercel.app/api/v1/videos`;
         const response = await axios.get(url);
         if (response.data.success) {
           setVideos(response.data.data);

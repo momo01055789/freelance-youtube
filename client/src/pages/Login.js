@@ -33,7 +33,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/v1/auth/login",
+        "https://freelance-youtubeserver.vercel.app/api/v1/auth/login",
         {
           email,
           password,

@@ -83,7 +83,7 @@ const AdminDashboard = () => {
       }
 
       const response = await axios.post(
-        "http://localhost:5000/api/v1/videos",
+        "https://freelance-youtubeserver.vercel.app/api/v1/videos",
         data,
         {
           headers: {
