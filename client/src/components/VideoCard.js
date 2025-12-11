@@ -93,6 +93,7 @@ const VideoCard = ({ video }) => {
             component="img"
             image={thumbnailUrl}
             alt={video.title}
+            loading="lazy"
             sx={{
               position: "absolute",
               top: 0,

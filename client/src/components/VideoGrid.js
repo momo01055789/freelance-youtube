@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Box, Container, Typography, Grid } from "@mui/material";
 import VideoCard from "./VideoCard";
 import axios from "axios";
+import cache from "../utils/cache";
 
 // Mock data - replace with actual data from your API
 
@@ -16,13 +17,30 @@ const VideoGrid = ({
 
   useEffect(() => {
     const fetchVideos = async () => {
+      // Generate cache key
+      const cacheKey = category ? `videos_${category}` : "videos_all";
+
+      // Check cache first
+      const cachedData = cache.get(cacheKey);
+      if (cachedData) {
+        console.log(`Loading videos from cache: ${cacheKey}`);
+        setVideos(cachedData);
+        setLoading(false);
+        return;
+      }
+
+      // If no cache, fetch from API
       try {
         const url = category
           ? `https://freelance-youtube.vercel.app/api/v1/videos?category=${category}`
           : `https://freelance-youtube.vercel.app/api/v1/videos`;
         const response = await axios.get(url);
         if (response.data.success) {
-          setVideos(response.data.data);
+          const videosData = response.data.data;
+          setVideos(videosData);
+          // Store in cache for 5 minutes
+          cache.set(cacheKey, videosData, 5 * 60 * 1000);
+          console.log(`Fetched and cached videos: ${cacheKey}`);
         }
       } catch (error) {
         console.error("Error fetching videos:", error);

@@ -21,6 +21,45 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
+// MongoDB connection for serverless
+let isConnected = false;
+
+const connectDB = async () => {
+  if (isConnected) {
+    console.log("Using existing MongoDB connection");
+    return;
+  }
+
+  try {
+    const db = await mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    });
+
+    isConnected = db.connections[0].readyState === 1;
+    console.log("MongoDB connected successfully");
+  } catch (error) {
+    console.error("MongoDB connection error:", error);
+    throw error;
+  }
+};
+
+// Middleware to ensure DB connection before each request
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: "Database Connection Error",
+      message: "Failed to connect to database",
+    });
+  }
+});
+
 // Mount routers
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/videos", videos);
@@ -34,22 +73,14 @@ app.get("/", (req, res) => {
   });
 });
 
-// Connect to MongoDB
-mongoose
-  .connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("Connected to MongoDB");
-    // Start the server after successful DB connection
+// For local development
+if (process.env.NODE_ENV !== "production") {
+  connectDB().then(() => {
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
-  })
-  .catch((err) => {
-    console.error("MongoDB connection error:", err);
   });
+}
 
 // Error handling middleware
 app.use((req, res, next) => {
@@ -80,6 +111,18 @@ app.use((err, req, res, next) => {
       success: false,
       error: "Resource not found",
       message: "The requested resource was not found",
+    });
+  }
+
+  // Handle MongoDB timeout errors
+  if (
+    err.name === "MongooseError" ||
+    err.message.includes("buffering timed out")
+  ) {
+    return res.status(503).json({
+      success: false,
+      error: "Database Connection Error",
+      message: "Database connection timed out. Please try again.",
     });
   }
 

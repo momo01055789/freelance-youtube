@@ -16,6 +16,14 @@ exports.getVideos = async (req, res) => {
     }
 
     const videos = await Video.find(query).sort("-createdAt");
+
+    // Set cache headers - cache for 5 minutes
+    res.set({
+      "Cache-Control":
+        "public, max-age=300, s-maxage=300, stale-while-revalidate=60",
+      ETag: `"${Date.now()}"`,
+    });
+
     res.status(200).json({
       success: true,
       count: videos.length,
@@ -40,6 +48,13 @@ exports.getVideo = async (req, res) => {
         error: "Video not found",
       });
     }
+
+    // Set cache headers - cache for 10 minutes
+    res.set({
+      "Cache-Control":
+        "public, max-age=600, s-maxage=600, stale-while-revalidate=120",
+      ETag: `"${video._id}-${video.updatedAt}"`,
+    });
 
     res.status(200).json({
       success: true,

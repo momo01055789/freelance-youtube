@@ -17,6 +17,7 @@ import {
   Toolbar,
 } from "@mui/material";
 import axios from "axios";
+import cache from "../utils/cache";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -95,6 +96,11 @@ const AdminDashboard = () => {
 
       if (response.data.success) {
         setSuccess("Video added successfully!");
+
+        // Clear video cache to force refresh on homepage
+        cache.clear();
+        console.log("Cache cleared after adding new video");
+
         // Reset form
         setFormData({
           title: "",
