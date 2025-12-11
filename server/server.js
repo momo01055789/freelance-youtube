@@ -14,13 +14,25 @@ const PORT = process.env.PORT || 5000;
 
 // CORS Configuration
 const corsOptions = {
-  origin: [
-    "http://localhost:3000",
-    "http://localhost:5000",
-    "https://freelance-youtube-v5jc.vercel.app",
-    "https://freelance-youtube.vercel.app",
-    /\.vercel\.app$/, // Allow all Vercel preview deployments
-  ],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or Postman)
+    if (!origin) return callback(null, true);
+
+    // List of allowed origins
+    const allowedOrigins = [
+      "http://localhost:3000",
+      "http://localhost:5000",
+      "https://freelance-youtube-v5jc.vercel.app",
+      "https://freelance-youtube.vercel.app",
+    ];
+
+    // Check if origin is in allowed list or matches Vercel pattern
+    if (allowedOrigins.includes(origin) || origin.includes(".vercel.app")) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
   optionsSuccessStatus: 200,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
