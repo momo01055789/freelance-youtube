@@ -12,9 +12,27 @@ const auth = require("./routes/auth");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// CORS Configuration
+const corsOptions = {
+  origin: [
+    "http://localhost:3000",
+    "http://localhost:5000",
+    "https://freelance-youtube-v5jc.vercel.app",
+    "https://freelance-youtube.vercel.app",
+    /\.vercel\.app$/, // Allow all Vercel preview deployments
+  ],
+  credentials: true,
+  optionsSuccessStatus: 200,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
+
+// Handle preflight requests
+app.options("*", cors(corsOptions));
 
 // Dev logging middleware
 if (process.env.NODE_ENV === "development") {
