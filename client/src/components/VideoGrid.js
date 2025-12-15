@@ -28,12 +28,11 @@ const VideoGrid = ({
         setLoading(false);
         return;
       }
-
       // If no cache, fetch from API
       try {
         const url = category
-          ? `https://freelance-youtube.vercel.app/api/v1/videos?category=${category}`
-          : `https://freelance-youtube.vercel.app/api/v1/videos`;
+          ? `http://localhost:5000/api/v1/videos?category=${category}`
+          : `http://localhost:5000/api/v1/videos`;
         const response = await axios.get(url);
         if (response.data.success) {
           const videosData = response.data.data;
